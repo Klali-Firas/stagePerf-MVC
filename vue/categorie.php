@@ -1,30 +1,23 @@
-<?php
-include 'entete.php';
-
-if (!empty($_GET['id'])) {
-    $categorie = getCategorie($_GET['id']);
-}
-
-?>
-
 <div class="home-content">
     <div class="overview-boxes">
         <div class="box">
-            <form action="<?= !empty($_GET['id']) ? "../model/modifCategorie.php" : "../model/ajoutCategorie.php" ?>" method="post">
+            <form method="post">
                 <label for="libelle_categorie">Libellé</label>
-                <input value="<?= !empty($_GET['id']) ? $categorie['libelle_categorie'] : "" ?>" type="text" name="libelle_categorie" id="libelle_categorie" placeholder="Veuillez saisir le nom">
+                <input value="<?= !empty($_GET['id']) ? $categorie['libelle_categorie'] : "" ?>" type="text"
+                    name="libelle_categorie" id="libelle_categorie" placeholder="Veuillez saisir le nom">
                 <input value="<?= !empty($_GET['id']) ? $categorie['id'] : "" ?>" type="hidden" name="id" id="id">
 
-                <button type="submit">Valider</button>
+                <button type="submit"
+                    name="<?= isset($_GET['id']) ? 'modifier' : 'ajouter' ?>"><?= !empty($_GET['id']) ? "Modifier" : "Ajouter" ?></button>
 
                 <?php
                 if (!empty($_SESSION['message']['text'])) {
-                ?>
+                    ?>
                     <div id="alert" class="alert <?= $_SESSION['message']['type'] ?>">
                         <?= $_SESSION['message']['text'] ?>
                     </div>
-                <?php    
-                
+                    <?php
+
                     unset($_SESSION['message']);
                 }
                 ?>
@@ -37,22 +30,23 @@ if (!empty($_GET['id'])) {
                     <th>Action</th>
                 </tr>
                 <?php
-                    $categories = getCategorie();
 
-                    if(!empty($categories) && is_array($categories)){
-                        foreach ($categories as $key => $value) {
+                if (!empty($categories) && is_array($categories)) {
+                    foreach ($categories as $key => $value) {
                         ?>
                         <tr>
                             <td><?= $value['libelle_categorie'] ?></td>
                             <td>
                                 <a href="?id=<?= $value['id'] ?>"><i class='bx bx-edit-alt'></i></a>
-                                <a href="../model/suppcategorie.php?id=<?= $value['id'] ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie?')"><i class='bx bx-trash'></i></a>
+                                <a href="?id=<?= $value['id'] ?>&delete=true"
+                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie?')"><i
+                                        class='bx bx-trash'></i></a>
                             </td>
                         </tr>
                         <?php
 
-                        }
                     }
+                }
                 ?>
             </table>
         </div>
@@ -61,5 +55,6 @@ if (!empty($_GET['id'])) {
 </section>
 
 <?php
-include 'pied.php';
+$contenu = ob_get_clean();
+include_once "layout.php";
 ?>
